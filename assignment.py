@@ -5,9 +5,13 @@ from glob import glob
 #user_data={}
 import csv
 import os
-print os.getcwd()
+from scipy.cluster.vq import kmeans2
+#print os.getcwd()
+
 #print glob('.')
 
+
+"""
 
 user_data=[]
 song_data=[]
@@ -19,8 +23,8 @@ with open('user_data_sample.csv', 'rb') as f:
         
         user_data.append(row)
         if(row[0]=="unknown"):
-            print row
-print len(user_data)
+            #print row
+#print len(user_data)
 #print "here"
 with open('end_song_sample.csv', 'rb') as f:
     reader = csv.reader(f,delimiter=',')
@@ -99,7 +103,36 @@ print "time per male per track listens",male_ms/(male_count*num_male)
 print "from above data, on an average a female clicks on a track and listens to it for 28 seconds"
 print "whereas a male listens to a track for 25 seconds average"
 print "but there are 26 people who have not listed their gender"
+"""
 
+K = range(1,101)
+male_dict={}
+male_train_arr = np.zeros((num_male,2))
+female_train_arr = np.zeros((num_female,2))
+count_m = 0
+count_f = 0
+male_id = []
+female_id = []
+for i,j in user_dict.iteritems():
+    if (j[0]=='male' and len(j[1][0:2])>0):
+        #print j[1][0:2]
+        #print j[3]
+        male_train_arr[count_m,:]=np.array([np.float(j[1][0:2]),np.float(j[3])])
+        count_m+=1
+        male_id.append(i)
+    elif(j[0]=='female' and len(j[1][0:2])>0):                
+        female_train_arr[count_f,:]=np.array([np.float(j[1][0:2]),np.float(j[3])])
+        count_f+=1        
+        female_id.append(i)
+        
+
+def SSE(cent,clust,data):
+    
+    err = 0
+    for i in range(0,cent.shape[0]):
+        np.sum(cent[i,:]-)
+    
+    return err
 
 
 
