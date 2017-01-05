@@ -2,18 +2,13 @@ import numpy as np
 import scipy as sc
 import csv
 from glob import glob
-#user_data={}
+
 import csv
 import os
 from scipy.cluster.vq import kmeans2
 import matplotlib.pyplot as plt
 
-#print os.getcwd()
-
-#print glob('.')
-
-
-"""
+###HERE
 
 user_data=[]
 song_data=[]
@@ -24,10 +19,9 @@ with open('user_data_sample.csv', 'rb') as f:
     for row in reader:
         
         user_data.append(row)
-        if(row[0]=="unknown"):
+        #if(row[0]=="unknown"):
             #print row
-#print len(user_data)
-#print "here"
+
 with open('end_song_sample.csv', 'rb') as f:
     reader = csv.reader(f,delimiter=',')
     for row in reader:
@@ -105,7 +99,7 @@ print "time per male per track listens",male_ms/(male_count*num_male)
 print "from above data, on an average a female clicks on a track and listens to it for 28 seconds"
 print "whereas a male listens to a track for 25 seconds average"
 print "but there are 26 people who have not listed their gender"
-"""
+###HERE
 
 def SSE(cent,clust,data):
     
@@ -126,6 +120,8 @@ count_m = 0
 count_f = 0
 male_id = []
 female_id = []
+
+country = []
 for i,j in user_dict.iteritems():
     if (j[0]=='male' and len(j[1][0:2])>0):
         #print j[1][0:2]
@@ -137,7 +133,8 @@ for i,j in user_dict.iteritems():
         female_train_arr[count_f,:]=np.array([np.float(j[1][0:2]),np.float(j[3])])
         count_f+=1        
         female_id.append(i)
-
+    if(j[2] not in country):
+        country.append(j[2])
 error_f = []
 error_m = []
 error_f1 = []
@@ -145,6 +142,9 @@ error_m1 = []
 
         
 K = range(1,50)
+
+
+### Doing gender-specific clustering
 
 for i in K:
     centroidf,cf = kmeans2(female_train_arr,i,minit='points')
@@ -157,19 +157,42 @@ for i in K:
     #break
 fig1 = plt.figure()
 plt.plot(error_f)
-fig1.savefig('project\female_clusters_elbow.png')
+fig1.savefig('project/female_clusters_elbow.png')
 fig2 = plt.figure()
 plt.plot(error_m)
-fig2.savefig('project\male_clusters_elbow.png')
+fig2.savefig('project/male_clusters_elbow.png')
 
-print "From graph, the elbow point for female clusters occurs at k = 3, 
-print "which means 4 clusters is chosen" 
+print "From graph, the elbow point for female clusters occurs at k = 2, "
+print "which means 3 clusters is chosen" 
 
 
-print "From graph, the elbow point for male clusters occurs at k = 2, 
+print "From graph, the elbow point for male clusters occurs at k = 2, "
 print "which means 3 clusters"
 
-fig3 = plt.figure()
+cent_f,clus_f = kmeans2(female_train_arr,3,minit='points')
 
-plt.plot()
+cent_m,clus_m = kmeans2(male_train_arr,3,minit='points')
+
+
+### I plot the scatter plot using the features as the age group and account age
+### This is regardless of their respective countries, but this is gender-specific
+
+fig3 = plt.figure()
+plt.scatter(female_train_arr[:,0],female_train_arr[:,1],c=clus_f)
+fig3.savefig('project/scatter_plt_f.png')
+fig4 = plt.figure()
+plt.scatter(male_train_arr[:,0],male_train_arr[:,1],c=clus_m)
+fig4.savefig('project/scatter_plt_m.png')
+
+### Doing country specific clustering
+
+user_country_dict = {}
+user_id_country_ord=[]
+
+for i in country:
+    user_country_dict[i]=[]
+for i,j in user_dict.iteritems():
+    
+    user_country_dict[j[2]].append([np.array([np.float(j[1][0:2]),np.float(j[3])])])
+    user_id_country_ord.append(i)
 
