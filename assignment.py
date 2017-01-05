@@ -9,7 +9,7 @@ from scipy.cluster.vq import kmeans2
 import matplotlib.pyplot as plt
 
 ###HERE
-
+'''
 user_data=[]
 song_data=[]
 with open('user_data_sample.csv', 'rb') as f:
@@ -99,18 +99,26 @@ print "time per male per track listens",male_ms/(male_count*num_male)
 print "from above data, on an average a female clicks on a track and listens to it for 28 seconds"
 print "whereas a male listens to a track for 25 seconds average"
 print "but there are 26 people who have not listed their gender"
-###HERE
+'''
+
+def elbowp(sqerr):
+    testline = np.zeros((len(sqerr),2))
+    testline[:,0]=np.arange(0,len(sqerr))
+    
+    sqerr_coord=np.zeros((len(sqerr),2))
+    sqerr_coord[:,0]=np.arange(0,len(sqerr))
+    sqerr_coord[:,1]=sqerr    
+    
+    testline[:,1]=np.arange(sqerr[0],sqerr[-1],(sqerr[-1]-sqerr[0])/(len(sqerr)) )
+    dist = (sqerr_coord - testline)[:,0]**2 + (sqerr_coord - testline)[:,1]**2    
+    return np.argmax(dist)
+
 
 def SSE(cent,clust,data):
     
     err = 0
     for i in range(0,cent.shape[0]):
-        #print i
-        #print clust
-        #print np.where(clust==i)
         
-        #print np.where(clust==i)[0].shape
-        #break
         err +=(np.linalg.norm(cent[i,:]-data[np.where(clust==i),:]))**2
     return err
 male_dict={}
@@ -153,15 +161,18 @@ for i in K:
     error_m.append(a)
     b = SSE(centroidf,cf,female_train_arr)
     error_f.append(b)
-    
+    print elbowp(error_m)
+    print elbowp(error_f)
+
     #break
 fig1 = plt.figure()
 plt.plot(error_f)
 fig1.savefig('project/female_clusters_elbow.png')
+plt.close()
 fig2 = plt.figure()
 plt.plot(error_m)
 fig2.savefig('project/male_clusters_elbow.png')
-
+plt.close()
 print "From graph, the elbow point for female clusters occurs at k = 2, "
 print "which means 3 clusters is chosen" 
 
@@ -180,19 +191,37 @@ cent_m,clus_m = kmeans2(male_train_arr,3,minit='points')
 fig3 = plt.figure()
 plt.scatter(female_train_arr[:,0],female_train_arr[:,1],c=clus_f)
 fig3.savefig('project/scatter_plt_f.png')
+plt.close()
 fig4 = plt.figure()
 plt.scatter(male_train_arr[:,0],male_train_arr[:,1],c=clus_m)
 fig4.savefig('project/scatter_plt_m.png')
-
+plt.close()
 ### Doing country specific clustering
 
 user_country_dict = {}
 user_id_country_ord=[]
 
+count = -1
+for i,j in user_dict.iteritems():
+    if(len(j[1])>0):
+        count+=1
+
+
 for i in country:
     user_country_dict[i]=[]
+
+count = -1
+
 for i,j in user_dict.iteritems():
-    
-    user_country_dict[j[2]].append([np.array([np.float(j[1][0:2]),np.float(j[3])])])
-    user_id_country_ord.append(i)
+    if(len(j[1])>0):
+        
+        user_country_dict[j[2]].append(np.array([np.float(j[1][0:2]),np.float(j[3])]))
+        user_id_country_ord.append(i)
+        
+
+        
+        
+        
+        
+
 
