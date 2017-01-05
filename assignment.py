@@ -6,6 +6,8 @@ from glob import glob
 import csv
 import os
 from scipy.cluster.vq import kmeans2
+import matplotlib.pyplot as plt
+
 #print os.getcwd()
 
 #print glob('.')
@@ -105,7 +107,15 @@ print "whereas a male listens to a track for 25 seconds average"
 print "but there are 26 people who have not listed their gender"
 """
 
-K = range(1,101)
+def SSE(cent,clust,data):
+    
+    err = 0
+    for i in range(0,cent.shape[0]):
+        
+        err += np.sum(np.linalg.norm(cent[i,:]-data[np.where(clust==i)]))
+    
+    return err
+
 male_dict={}
 male_train_arr = np.zeros((num_male,2))
 female_train_arr = np.zeros((num_female,2))
@@ -124,15 +134,20 @@ for i,j in user_dict.iteritems():
         female_train_arr[count_f,:]=np.array([np.float(j[1][0:2]),np.float(j[3])])
         count_f+=1        
         female_id.append(i)
+
+error_f = []
+error_m = []
         
+K = range(1,50)
 
-def SSE(cent,clust,data):
-    
-    err = 0
-    for i in range(0,cent.shape[0]):
-        np.sum(cent[i,:]-)
-    
-    return err
+for i in K:
+    centroidf,cf = kmeans2(female_train_arr,i)
+    centroidm,cm = kmeans2(male_train_arr,i)
+    error_f.append(SSE(centroidf,cf,female_train_arr))
+    error_m.append(SSE(centroidm,cm,male_train_arr))
 
-
+plt.figure()
+plt.plot(error_f)
+plt.figure()
+plt.plot(error_m)
 
