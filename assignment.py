@@ -111,11 +111,14 @@ def SSE(cent,clust,data):
     
     err = 0
     for i in range(0,cent.shape[0]):
+        #print i
+        #print clust
+        #print np.where(clust==i)
         
-        err += np.sum(np.linalg.norm(cent[i,:]-data[np.where(clust==i)]))
-    
+        #print np.where(clust==i)[0].shape
+        #break
+        err +=(np.linalg.norm(cent[i,:]-data[np.where(clust==i),:]))**2
     return err
-
 male_dict={}
 male_train_arr = np.zeros((num_male,2))
 female_train_arr = np.zeros((num_female,2))
@@ -137,17 +140,36 @@ for i,j in user_dict.iteritems():
 
 error_f = []
 error_m = []
+error_f1 = []
+error_m1 = []
+
         
 K = range(1,50)
 
 for i in K:
-    centroidf,cf = kmeans2(female_train_arr,i)
-    centroidm,cm = kmeans2(male_train_arr,i)
-    error_f.append(SSE(centroidf,cf,female_train_arr))
-    error_m.append(SSE(centroidm,cm,male_train_arr))
-
-plt.figure()
+    centroidf,cf = kmeans2(female_train_arr,i,minit='points')
+    centroidm,cm = kmeans2(male_train_arr,i,minit='points')
+    a = SSE(centroidm,cm,male_train_arr)
+    error_m.append(a)
+    b = SSE(centroidf,cf,female_train_arr)
+    error_f.append(b)
+    
+    #break
+fig1 = plt.figure()
 plt.plot(error_f)
-plt.figure()
+fig1.savefig('project\female_clusters_elbow.png')
+fig2 = plt.figure()
 plt.plot(error_m)
+fig2.savefig('project\male_clusters_elbow.png')
+
+print "From graph, the elbow point for female clusters occurs at k = 3, 
+print "which means 4 clusters is chosen" 
+
+
+print "From graph, the elbow point for male clusters occurs at k = 2, 
+print "which means 3 clusters"
+
+fig3 = plt.figure()
+
+plt.plot()
 
