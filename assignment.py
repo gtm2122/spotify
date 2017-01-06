@@ -103,6 +103,7 @@ print "whereas a male listens to a track for 25 seconds average"
 print "but there are 26 people who have not listed their gender"
 '''
 ### Q2
+'''
 def elbowp(sqerr):
     testline = np.zeros((len(sqerr),2))
     testline[:,0]=np.arange(0,len(sqerr))
@@ -127,9 +128,11 @@ def SSE(cent,clust,data):
         
         err +=(np.linalg.norm(cent[i,:]-data[np.where(clust==i),:]))**2
     return err
-'''
+
 male_dict={}
-male_train_arr = np.zeros((num_male,2))
+#male_train_arr = np.zeros((num_male,2))
+male_train_arr = []
+
 female_train_arr = np.zeros((num_female,2))
 count_m = 0
 count_f = 0
@@ -141,7 +144,8 @@ for i,j in user_dict.iteritems():
     if (j[0]=='male' and len(j[1][0:2])>0):
         #print j[1][0:2]
         #print j[3]
-        male_train_arr[count_m,:]=np.array([np.float(j[1][0:2]),np.float(j[3])])
+        #male_train_arr[count_m,:]=np.array([np.float(j[1][0:2]),np.float(j[3])])
+        male_train_arr.append(np.array([np.float(j[1][0:2]),np.float(j[3])]))
         count_m+=1
         male_id.append(i)
     elif(j[0]=='female' and len(j[1][0:2])>0):                
@@ -150,6 +154,7 @@ for i,j in user_dict.iteritems():
         female_id.append(i)
     if(j[2] not in country):
         country.append(j[2])
+male_train_arr=np.array(male_train_arr)
 error_f = []
 error_m = []
 error_f1 = []
@@ -239,14 +244,14 @@ for i,j in user_country_dict.iteritems():
         
         #print elbow_c
 '''
-### Performing analysis on song based on gender
-
+### Performing reorganization of song data
+'''
 song_dict_usr = {}
 song_dict_song = {}
 context = []
 product = []
 for i in song_data:
-    if i[5] not in song_dict_usr:
+    if i[5] not in song_dict_usr :
         song_dict_usr[i[5]] = []
     song_dict_usr[i[5]].append([i[0],i[1],i[3],i[4]])
     
@@ -255,15 +260,44 @@ for i in song_data:
     if i[1] not in context:
         context.append(i[1])
         
-    if(i[2] not in song_dict_song):
+    if(i[2] not in song_dict_song ):
         song_dict_song[i[2]] = []
     song_dict_song[i[2]].append([i[0],i[1],i[3],i[4],i[5]])
 
+'''
+### Performing gender specific analysis
 
- 
+male_clus_avgtime = np.zeros((1,max(clus_m)+1))
 
+male_clus_context =np.zeros((max(clus_m)+1,len(context)))
+male_clus_product =np.zeros((max(clus_m)+1,len(product)))
+
+female_clus_avgtime = np.zeros((1,max(clus_f)+1))
+female_clus_context =np.zeros((max(clus_f)+1,len(context)))
+female_clus_product =np.zeros((max(clus_f)+1,len(product)))
+
+for i in range(0,clus_m.shape[0]):
+    if male_id[i] in song_dict_usr:
+        for j in song_dict_usr[male_id[i]]:
+            #print j[0]
+            #print type(j[0])
+            #print max(clus_m) +1
+            #print clus_m[i]
+            #print i
+             
+            male_clus_avgtime[0,clus_m[i]]+=np.float(j[0])/clus_m.shape[0]
+            male_clus_context[clus_m[i],context.index(j[1])]+=1
+            male_clus_product[clus_m[i],product.index(j[2])]+=1
         
 
+for i in range(0,clus_f.shape[0]):
+    if female_id[i] in song_dict_usr:
+        for j in song_dict_usr[female_id[i]]:
+            #print j[0]
+            #print type(j[0])
+            female_clus_avgtime[0,clus_f[i]]+=np.float(j[0])/clus_f.shape[0]
+            female_clus_context[clus_f[i],context.index(j[1])]+=1
+            female_clus_product[clus_f[i],product.index(j[2])]+=1
         
 
         
