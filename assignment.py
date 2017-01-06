@@ -202,7 +202,7 @@ plt.close()
 ### Doing country specific clustering
 
 user_country_dict = {}
-user_id_country_ord=[]
+user_id_country_ord= {}
 
 count = -1
 for i,j in user_dict.iteritems():
@@ -219,7 +219,7 @@ for i,j in user_dict.iteritems():
     if(len(j[1])>0):
         
         user_country_dict[j[2]].append(np.array([np.float(j[1][0:2]),np.float(j[3])]))
-        user_id_country_ord.append(i)
+        user_id_country_ord[j[2]].append(i)
 
 user_country_clusts = {}
 
