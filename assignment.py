@@ -268,37 +268,49 @@ for i in song_data:
 ### Performing gender specific analysis
 
 male_clus_avgtime = np.zeros((1,max(clus_m)+1))
-
 male_clus_context =np.zeros((max(clus_m)+1,len(context)))
 male_clus_product =np.zeros((max(clus_m)+1,len(product)))
+male_clus_favsong = []
+male_clus_song_time = []
 
 female_clus_avgtime = np.zeros((1,max(clus_f)+1))
 female_clus_context =np.zeros((max(clus_f)+1,len(context)))
 female_clus_product =np.zeros((max(clus_f)+1,len(product)))
+female_clus_favsong = []
+female_clus_song_time = []
 
-for i in range(0,clus_m.shape[0]):
-    if male_id[i] in song_dict_usr:
-        for j in song_dict_usr[male_id[i]]:
-            #print j[0]
-            #print type(j[0])
-            #print max(clus_m) +1
-            #print clus_m[i]
-            #print i
-             
-            male_clus_avgtime[0,clus_m[i]]+=np.float(j[0])/clus_m.shape[0]
-            male_clus_context[clus_m[i],context.index(j[1])]+=1
-            male_clus_product[clus_m[i],product.index(j[2])]+=1
-        
 
-for i in range(0,clus_f.shape[0]):
-    if female_id[i] in song_dict_usr:
-        for j in song_dict_usr[female_id[i]]:
-            #print j[0]
-            #print type(j[0])
-            female_clus_avgtime[0,clus_f[i]]+=np.float(j[0])/clus_f.shape[0]
-            female_clus_context[clus_f[i],context.index(j[1])]+=1
-            female_clus_product[clus_f[i],product.index(j[2])]+=1
-        
+def get_feature_count_clus(dict_usr,clust,clust_id,cont,prod):
+    avgtime = np.zeros((1,max(clust)+1))
+    context_count=np.zeros((max(clust)+1,len(cont)))
+    prod_count = np.zeros((max(clust)+1,len(prod)))
+    for i in range(0,clust.shape[0]):
+        if clust_id[i] in dict_usr:
+            for j in dict_usr[clust_id[i]]:
+                
+                avgtime[0,clust[i]]+=np.float(j[0])/clust.shape[0]
+                context_count[clust[i],cont.index(j[1])]+=1
+                prod_count[clust[i],prod.index(j[2])]+=1
+    return avgtime,context_count,prod_count
+
+male_clus_avgtime,male_clus_context,male_clus_product = get_feature_count_clus(song_dict_usr,clus_m,male_id,context,product)
+female_clus_avgtime,female_clus_context,female_clus_product = get_feature_count_clus(song_dict_usr,clus_f,female_id,context,product)
+
+def get_fave_song_clus(dict_song,clus_id,clus):
+    fave_song_clus = []
+    song_ids = []
+    for i in range(0,max(clus_m)+1):
+        clus_spec_id_male = male_id[np.where(clus_m==i)]
+        count = {}
+        for j,l in song_dict_song.iteritems():
+            if j not in count:
+                count[j] = 0
+                song_ids.append(j)                
+            if clus_spec_id in l:
+                count[j]+=1
+        for j,l in count[j].iteritems:
+            
+            fave_song_clus.append()
 
         
     
