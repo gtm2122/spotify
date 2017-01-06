@@ -9,6 +9,7 @@ from scipy.cluster.vq import kmeans2
 import matplotlib.pyplot as plt
 
 np.random.seed(20)
+###Q1
 ###HERE
 '''
 user_data=[]
@@ -101,7 +102,7 @@ print "from above data, on an average a female clicks on a track and listens to 
 print "whereas a male listens to a track for 25 seconds average"
 print "but there are 26 people who have not listed their gender"
 '''
-
+### Q2
 def elbowp(sqerr):
     testline = np.zeros((len(sqerr),2))
     testline[:,0]=np.arange(0,len(sqerr))
@@ -126,6 +127,7 @@ def SSE(cent,clust,data):
         
         err +=(np.linalg.norm(cent[i,:]-data[np.where(clust==i),:]))**2
     return err
+'''
 male_dict={}
 male_train_arr = np.zeros((num_male,2))
 female_train_arr = np.zeros((num_female,2))
@@ -227,13 +229,43 @@ for i,j in user_country_dict.iteritems():
     user_country_dict[i]=np.array(user_country_dict[i]).reshape((len(user_country_dict[i]),2))
     if(user_country_dict[i].shape[0]>15):
         sqerror = []
-        print (user_country_dict[i].shape[0])/2 
+        #print (user_country_dict[i].shape[0])/2 
         for k in range(2,min((user_country_dict[i].shape[0])/2,100) ):
             centroids,clusts = kmeans2(user_country_dict[i],k)
             sqerror.append(SSE(centroids,clusts,user_country_dict[i]))
         elbow_c = elbowp(sqerror)
         centroids,clusts = kmeans2(user_country_dict[i],elbow_c)
         user_country_clusts[i] = clusts
+        
+        #print elbow_c
+'''
+### Performing analysis on song based on gender
+
+song_dict_usr = {}
+song_dict_song = {}
+context = []
+product = []
+for i in song_data:
+    if i[5] not in song_dict_usr:
+        song_dict_usr[i[5]] = []
+    song_dict_usr[i[5]].append([i[0],i[1],i[3],i[4]])
+    
+    if i[3] not in product:
+        product.append(i[3])
+    if i[1] not in context:
+        context.append(i[1])
+        
+    if(i[2] not in song_dict_song):
+        song_dict_song[i[2]] = []
+    song_dict_song[i[2]].append([i[0],i[1],i[3],i[4],i[5]])
+
+
+ 
+
+        
+
+        
+
         
     
 
