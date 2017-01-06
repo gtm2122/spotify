@@ -220,9 +220,24 @@ for i,j in user_dict.iteritems():
         
         user_country_dict[j[2]].append(np.array([np.float(j[1][0:2]),np.float(j[3])]))
         user_id_country_ord.append(i)
-        
 
+user_country_clusts = {}
+
+for i,j in user_country_dict.iteritems():
+    user_country_dict[i]=np.array(user_country_dict[i]).reshape((len(user_country_dict[i]),2))
+    if(user_country_dict[i].shape[0]>15):
+        sqerror = []
+        print (user_country_dict[i].shape[0])/2 
+        for k in range(2,min((user_country_dict[i].shape[0])/2,100) ):
+            centroids,clusts = kmeans2(user_country_dict[i],k)
+            sqerror.append(SSE(centroids,clusts,user_country_dict[i]))
+        elbow_c = elbowp(sqerror)
+        centroids,clusts = kmeans2(user_country_dict[i],elbow_c)
+        user_country_clusts[i] = clusts
         
+    
+
+
         
         
         
