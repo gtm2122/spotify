@@ -212,7 +212,7 @@ for i,j in user_dict.iteritems():
 
 for i in country:
     user_country_dict[i]=[]
-
+    user_id_country_ord[i] = []
 count = -1
 
 for i,j in user_dict.iteritems():
