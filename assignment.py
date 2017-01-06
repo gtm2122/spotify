@@ -8,6 +8,7 @@ import os
 from scipy.cluster.vq import kmeans2
 import matplotlib.pyplot as plt
 
+np.random.seed(20)
 ###HERE
 '''
 user_data=[]
@@ -104,13 +105,17 @@ print "but there are 26 people who have not listed their gender"
 def elbowp(sqerr):
     testline = np.zeros((len(sqerr),2))
     testline[:,0]=np.arange(0,len(sqerr))
+   
     
     sqerr_coord=np.zeros((len(sqerr),2))
     sqerr_coord[:,0]=np.arange(0,len(sqerr))
-    sqerr_coord[:,1]=sqerr    
+    sqerr_coord[:,1]=sqerr 
     
-    testline[:,1]=np.arange(sqerr[0],sqerr[-1],(sqerr[-1]-sqerr[0])/(len(sqerr)) )
-    dist = (sqerr_coord - testline)[:,0]**2 + (sqerr_coord - testline)[:,1]**2    
+    testline[0:len(np.arange(sqerr[0],sqerr[-1],(sqerr[-1]-sqerr[0])/(len(sqerr)-1) )),1]= np.arange(sqerr[0],sqerr[-1],(sqerr[-1]-sqerr[0])/(len(sqerr)-1) )
+    
+    #plt.plot(testline)
+    dist = (sqerr_coord - testline)[:,0]**2.0 + (sqerr_coord - testline)[:,1]**2.0
+       
     return np.argmax(dist)
 
 
@@ -161,10 +166,11 @@ for i in K:
     error_m.append(a)
     b = SSE(centroidf,cf,female_train_arr)
     error_f.append(b)
-    print elbowp(error_m)
-    print elbowp(error_f)
+    
+elbow_m = elbowp(error_m)
+elbow_f = elbowp(error_f)
 
-    #break
+#break
 fig1 = plt.figure()
 plt.plot(error_f)
 fig1.savefig('project/female_clusters_elbow.png')
@@ -173,16 +179,13 @@ fig2 = plt.figure()
 plt.plot(error_m)
 fig2.savefig('project/male_clusters_elbow.png')
 plt.close()
-print "From graph, the elbow point for female clusters occurs at k = 2, "
-print "which means 3 clusters is chosen" 
+print "From graph, the elbow point for female clusters occurs at k = ",elbow_f
 
+print "From graph, the elbow point for male clusters occurs at k =  ",elbow_m
 
-print "From graph, the elbow point for male clusters occurs at k = 2, "
-print "which means 3 clusters"
+cent_f,clus_f = kmeans2(female_train_arr,elbow_f-1,minit='points')
 
-cent_f,clus_f = kmeans2(female_train_arr,3,minit='points')
-
-cent_m,clus_m = kmeans2(male_train_arr,3,minit='points')
+cent_m,clus_m = kmeans2(male_train_arr,elbow_m-1,minit='points')
 
 
 ### I plot the scatter plot using the features as the age group and account age
