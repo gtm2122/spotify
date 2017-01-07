@@ -160,7 +160,7 @@ error_m = []
 error_f1 = []
 error_m1 = []
 
-        
+      
 K = range(1,50)
 
 
@@ -206,8 +206,9 @@ fig4 = plt.figure()
 plt.scatter(male_train_arr[:,0],male_train_arr[:,1],c=clus_m)
 fig4.savefig('project/scatter_plt_m.png')
 plt.close()
+'''
 ### Doing country specific clustering
-
+'''
 user_country_dict = {}
 user_id_country_ord= {}
 
@@ -243,9 +244,9 @@ for i,j in user_country_dict.iteritems():
         user_country_clusts[i] = clusts
         
         #print elbow_c
-'''
+
 ### Performing reorganization of song data
-'''
+
 song_dict_usr = {}
 song_dict_song = {}
 context = []
@@ -264,21 +265,17 @@ for i in song_data:
         song_dict_song[i[2]] = []
     song_dict_song[i[2]].append([i[0],i[1],i[3],i[4],i[5]])
 
-'''
+
 ### Performing gender specific analysis
 '''
 male_clus_avgtime = np.zeros((1,max(clus_m)+1))
 male_clus_context =np.zeros((max(clus_m)+1,len(context)))
 male_clus_product =np.zeros((max(clus_m)+1,len(product)))
-male_clus_favsong = []
-male_clus_song_time = []
 
 female_clus_avgtime = np.zeros((1,max(clus_f)+1))
 female_clus_context =np.zeros((max(clus_f)+1,len(context)))
 female_clus_product =np.zeros((max(clus_f)+1,len(product)))
-female_clus_favsong = []
-female_clus_song_time = []
-
+'''
 
 def get_feature_count_clus(dict_usr,clust,clust_id,cont,prod):
     avgtime = np.zeros((1,max(clust)+1))
@@ -292,9 +289,47 @@ def get_feature_count_clus(dict_usr,clust,clust_id,cont,prod):
                 context_count[clust[i],cont.index(j[1])]+=1
                 prod_count[clust[i],prod.index(j[2])]+=1
     return avgtime,context_count,prod_count
-
+'''
+'''
 male_clus_avgtime,male_clus_context,male_clus_product = get_feature_count_clus(song_dict_usr,clus_m,male_id,context,product)
 female_clus_avgtime,female_clus_context,female_clus_product = get_feature_count_clus(song_dict_usr,clus_f,female_id,context,product)
+'''
+'''
+### Performing country specific analysis
+### I chose to perform this analysis on the top 3 countries from the dataset
+
+'''
+top_3_country = {}
+
+a = user_country_clusts
+
+len_clusts = []
+key_clusts = []
+
+for i in a.iterkeys():
+    len_clusts.append(a[i].shape[0])
+    key_clusts.append(i)
+len_clusts = np.argsort(np.array(len_clusts))[::-1]
+
+country_context_clus={}
+country_product_clus={}
+country_avgtime_clus={}
+
+
+for i in len_clusts[0:3]:
+    
+    country_context_clus[key_clusts[i]]=[]
+    country_product_clus[key_clusts[i]]=[]
+    country_avgtime_clus[key_clusts[i]]=[]
+    x,y,z = get_feature_count_clus(song_dict_usr,a[key_clusts[i]],user_id_country_ord[key_clusts[i]],context,product)
+    
+    country_context_clus[key_clusts[i]].append(y)
+    country_product_clus[key_clusts[i]].append(z)
+    country_avgtime_clus[key_clusts[i]].append(x)
+    
+#top_3_country = 
+
+
 '''
 def get_fave_song_clus(dict_song,clus_id,clus):
     fave_song_clus = []
@@ -304,9 +339,12 @@ def get_fave_song_clus(dict_song,clus_id,clus):
         idx = np.where(clus==i)[0]
         clus_spec_id=[]
         for a in idx:
-            print a
+            #print a
             clus_spec_id.append(clus_id[a])
         count = []
+        #print clus_spec_id
+        #break
+        list_clus = [dict_song[x] for x in clus_spec_id]
         for j,l in dict_song.iteritems():
             if j not in count:
                 count.append(0)
@@ -319,8 +357,8 @@ def get_fave_song_clus(dict_song,clus_id,clus):
     return fave_song_clus,max_count
 
 fave_song_male_clus,fave_song_count_male = get_fave_song_clus(song_dict_song,male_id,clus_m)
-            
-        
+'''           
+
         
 
         
