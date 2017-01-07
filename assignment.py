@@ -206,7 +206,7 @@ fig4 = plt.figure()
 plt.scatter(male_train_arr[:,0],male_train_arr[:,1],c=clus_m)
 fig4.savefig('project/scatter_plt_m.png')
 plt.close()
-'''
+
 ### Doing country specific clustering
 '''
 user_country_dict = {}
@@ -267,7 +267,7 @@ for i in song_data:
 
 
 ### Performing gender specific analysis
-'''
+
 male_clus_avgtime = np.zeros((1,max(clus_m)+1))
 male_clus_context =np.zeros((max(clus_m)+1,len(context)))
 male_clus_product =np.zeros((max(clus_m)+1,len(product)))
@@ -275,7 +275,7 @@ male_clus_product =np.zeros((max(clus_m)+1,len(product)))
 female_clus_avgtime = np.zeros((1,max(clus_f)+1))
 female_clus_context =np.zeros((max(clus_f)+1,len(context)))
 female_clus_product =np.zeros((max(clus_f)+1,len(product)))
-'''
+
 
 def get_feature_count_clus(dict_usr,clust,clust_id,cont,prod):
     avgtime = np.zeros((1,max(clust)+1))
@@ -298,7 +298,7 @@ female_clus_avgtime,female_clus_context,female_clus_product = get_feature_count_
 ### Performing country specific analysis
 ### I chose to perform this analysis on the top 3 countries from the dataset
 
-'''
+
 top_3_country = {}
 
 a = user_country_clusts
@@ -326,38 +326,7 @@ for i in len_clusts[0:3]:
     country_context_clus[key_clusts[i]].append(y)
     country_product_clus[key_clusts[i]].append(z)
     country_avgtime_clus[key_clusts[i]].append(x)
-    
-#top_3_country = 
-
-
-'''
-def get_fave_song_clus(dict_song,clus_id,clus):
-    fave_song_clus = []
-    song_ids = []
-    max_count = []
-    for i in range(0,max(clus)+1):
-        idx = np.where(clus==i)[0]
-        clus_spec_id=[]
-        for a in idx:
-            #print a
-            clus_spec_id.append(clus_id[a])
-        count = []
-        #print clus_spec_id
-        #break
-        list_clus = [dict_song[x] for x in clus_spec_id]
-        for j,l in dict_song.iteritems():
-            if j not in count:
-                count.append(0)
-                song_ids.append(j)                
-            if clus_spec_id in l:
-                count[j]+=1
-        count=np.array(count)
-        max_count.append(max(count))
-        fave_song_clus.append(song_ids[np.argmax(count)])
-    return fave_song_clus,max_count
-
-fave_song_male_clus,fave_song_count_male = get_fave_song_clus(song_dict_song,male_id,clus_m)
-'''           
+#'''    
 
         
 
